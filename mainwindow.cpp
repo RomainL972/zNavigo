@@ -73,6 +73,7 @@ void MainWindow::addTab()
     connect(page, SIGNAL(loadProgress(int)), progress, SLOT(setValue(int)));
     connect(page, SIGNAL(titleChanged(QString)), this, SLOT(changeTitle(QString)));
     connect(page, SIGNAL(urlChanged(QUrl)), this, SLOT(changeUrl(QUrl)));
+    connect(page, SIGNAL(iconChanged(QIcon)), this, SLOT(changeIcon(QIcon)));
 
     goHome();
     if(tabs->count() >= 2)
@@ -122,7 +123,7 @@ void MainWindow::goHome()
 void MainWindow::load(QString url)
 {
     if(url == "")
-        url = HOME_URL;
+        url = urlLineEdit->text();
     load(QUrl(url));
 }
 
@@ -145,10 +146,23 @@ void MainWindow::changeTitle(QString title)
 
 void MainWindow::changeUrl(QUrl newUrl)
 {
+    if(getPage()->history()->canGoBack())
+        previousPageAction->setEnabled(true);
+    else
+        previousPageAction->setEnabled(false);
+    if(getPage()->history()->canGoForward())
+        nextPageAction->setEnabled(true);
+    else
+        nextPageAction->setEnabled(false);
     urlLineEdit->setText(newUrl.toString());
 }
 
 QWebEngineView* MainWindow::getPage()
 {
     return pages[0][tabs->currentIndex()];
+}
+
+void MainWindow::changeIcon(QIcon newIcon)
+{
+    tabs->setTabIcon(tabs->currentIndex(), newIcon);
 }

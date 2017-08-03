@@ -25,6 +25,7 @@ public slots:
     void updateUrl(int newIndex);
     void changeTitle(QString title);
     void changeUrl(QUrl newUrl);
+    void changeIcon(QIcon newIcon);
 
 private:
     QList<QWebEngineView *> *pages;
