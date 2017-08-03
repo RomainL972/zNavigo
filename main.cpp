@@ -1,30 +1,19 @@
-/**
-  * @file main.cpp
-  * @brief the main file
-  * @author Romain Lebbadi-Breteau
-  * @version 1.0
-  * @date 02/08/2017
-  */
 #include <QApplication>
+#include <QTranslator>
+#include <QLocale>
+#include <QLibraryInfo>
 #include "mainwindow.h"
 
-/**
- * @brief main create a window and show it
- * @param argc contains the number of arguments
- * @param argv contains the aguments
- * @return if everything went good
- */
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-    /**
-     * @brief app is the application
-     * @return the current application
-     */
     QApplication app(argc, argv);
 
-    /**
-     * @brief window is the main window
-     */
+    QString locale = QLocale::system().name().section('_', 0, 0);
+
+    QTranslator translator;
+    translator.load(QString("znavigo_") + locale);
+    app.installTranslator(&translator);
+
     MainWindow window;
     window.show();
 

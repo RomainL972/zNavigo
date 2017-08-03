@@ -6,3 +6,6 @@ HEADERS += \
 SOURCES += \
     mainwindow.cpp \
     main.cpp
+
+TRANSLATIONS += \
+    znavigo_en.ts
