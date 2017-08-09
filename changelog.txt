@@ -1,0 +1,100 @@
+zNavigo
+
+1.0 - Wed Aug 2 21:46:00 2017
+
+First working release
+2 Menus : Fichier and Navigation
+1 Tool Bar : Navigation
+Fichier:
+	Ajouter un onglet
+	Supprimer un onglet
+	Quitter
+Navigation:
+	Page suivante
+	Page précédante
+	Actualiser
+	Page d'accueil
+	URL
+	Charger URL
+
+classes:
+-MainWindow
+	properties:
+	-QTabWidget *onglets;
+	-QProgressBar *progression;
+	-QLineEdit *url;
+	-QList<QWebEngineView *> *pages;
+	-QAction *pagePrecedante;
+	-QAction *pageSuivante;
+	-QAction *supprimerOnglet;
+	methods:
+	-MainWindow();
+	slots:
+	-void addTab();
+	-void changerTitre(QString titre);
+	-void changeUrl(QUrl newUrl);
+	-void setUrl();
+	-void updateUrl(int newIndex);
+	-void goHome();
+	-void pageAfter();
+	-void pageBefore();
+	-void deleteTab();
+	-void actualiser();
+
+Everything is in French!
+All the buttons are working
+Remove a tab unavailable if just 1 tab open
+Previous/Next page unavailale if impossible
+Comments everywhere
+doc/ contains a doxygen-generated doc
+HOME_URL contains the default home url
+
+1.1 - Thu Aug 3 20:42:12 2017
+legend:
+- is deleted
++ id added
+* is changed
+
+-remove all comments
+-remove doc/
++add translations files
++add executable in the folder
++add translations load in main.cpp
+*reorganize window creation
+*vars and methods names are now in English
++add icones folder
+*move HOME_URL to mainwindow.h
+slots:
+	*changerTitre -> changeTitle
+	*setUrl -> load
+	*pageAfter -> nextPage
+	*pageBefore-> previousPage
+	*actualiser -> reload
+methods:
+	+getPage
+*changeUrl manage next/previous page buttons activation (with nextPage and previousPage slots)
+properties:
+	+add QList<QWebEngineView *> *pages;
+	*onglets -> tabs
+	*progression -> progress
+	*url -> urlLineEdit
+	*pagePrecedante -> previousPageAction
+	*pageSuivante -> nextPageAction
+	+add properties for all menus, tool bars and menus
+*functions optimization
++press enter can be used do load a page
+
+1.1.1 - Thu Aug 3 21:01:19 2017
++add informations in README.md
+*bug fixes
++add changeIcon method for changing the tab icon
+
+1.2
+mainwindow.h:
+*include QtWebEngineWidgets instead of each QWebEngine
++add history and about
++about display infos about Qt or zNavigo
++history contains HistoryItem menus
++you can click on a url in the history
++if data in urlLineEdit not url, convert to https://google.com/search?q=$data
++if it's an url without http://, add it

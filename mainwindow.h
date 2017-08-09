@@ -3,8 +3,8 @@
 #define HOME_URL "http://www.lebbadi.fr"
 
 #include <QtWidgets>
-#include <QWebEngineView>
-#include <QWebEngineHistory>
+#include <QtWebEngineWidgets>
+#include "historyitem.h"
 
 class MainWindow : public QMainWindow
 {
@@ -12,6 +12,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow();
     QWebEngineView* getPage();
+    void updateHistory();
 
 public slots:
     void addTab();
@@ -22,6 +23,7 @@ public slots:
     void goHome();
     void load(QString url="");
     void load(QUrl url);
+    void about();
     void updateUrl(int newIndex);
     void changeTitle(QString title);
     void changeUrl(QUrl newUrl);
@@ -39,8 +41,12 @@ private:
     QAction *homePageAction;
     QLineEdit *urlLineEdit;
     QAction *loadUrlAction;
-    QMenu *fileBar;
+    QAction *aboutQtAction;
+    QAction *aboutZNavigoAction;
+    QMenu *fileMenu;
     QMenu *navigateMenu;
+    QMenu *historyMenu;
+    QMenu *aboutMenu;
     QToolBar *navigateToolBar;
     QProgressBar *progress;
 
