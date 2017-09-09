@@ -1,17 +1,18 @@
 #include "historyitem.h"
 
-HistoryItem::HistoryItem(QString title, QUrl url)
+HistoryItem::HistoryItem(QString title, QUrl url) : QMenu(title)
 {
     if(title.isEmpty())
-        title = url.toString();
-    m_title = title;
-    m_url = url.toString();
-    setTitle(m_title);
-    m_action = addAction(m_url);
+        setTitle(url.toString());
+    m_action = addAction(url.toString());
+    QFont font;
+    font.setUnderline(true);
+    m_action->setFont(font);
+
     connect(m_action, SIGNAL(triggered(bool)), this, SLOT(sendUrlClicked()));
 }
 
 void HistoryItem::sendUrlClicked()
 {
-    emit urlClicked(m_url);
+    emit urlClicked(m_action->text());
 }

@@ -3,51 +3,59 @@
 MainWindow::MainWindow() : QMainWindow()
 {
     setWindowTitle("zNavigo");
-    setWindowIcon(QIcon(qApp->applicationDirPath() + "/icones/web.png"));
-    pages = new QList<QWebEngineView *>();
+    setWindowIcon(QIcon(":/icones/web.png"));
     tabs = new QTabWidget();
     setCentralWidget(tabs);
 
-    addTabAction = new QAction(tr("Ajouter un onglet"));
-    deleteTabAction = new QAction(tr("Supprimer un onglet"));
-    quitAction = new QAction(tr("Quitter"));
-    nextPageAction = new QAction(QIcon(qApp->applicationDirPath() + "/icones/suiv.png"), tr("Page suivante"));
-    previousPageAction = new QAction(QIcon(qApp->applicationDirPath() + "/icones/prec.png"), tr("Page précédante"));
-    reloadAction = new QAction(QIcon(qApp->applicationDirPath() + "/icones/actu.png"), tr("Actualiser"));
-    homePageAction = new QAction(QIcon(qApp->applicationDirPath() + "/icones/home.png"), tr("Page d'accueil"));
+    addTabAction = new QAction(tr("Add a tab"));
+    deleteTabAction = new QAction(tr("Delete a tab"));
+    quitAction = new QAction(tr("Quit"));
+    nextPageAction = new QAction(QIcon(":/icones/suiv.png"), tr("Next Page"));
+    previousPageAction = new QAction(QIcon(":/icones/prec.png"), tr("Previous Page"));
+    reloadAction = new QAction(QIcon(":/icones/actu.png"), tr("Reload"));
+    homePageAction = new QAction(QIcon(":/icones/home.png"), tr("Home Page"));
     urlLineEdit = new QLineEdit(HOME_URL);
-    loadUrlAction = new QAction(QIcon(qApp->applicationDirPath() + "/icones/go.png"), tr("Charger la page"));
-    aboutQtAction = new QAction(tr("A propos de Qt"));
-    aboutZNavigoAction = new QAction(tr("A propos de zNavigo"));
+    loadUrlAction = new QAction(QIcon(":/icones/go.png"), tr("Load the page"));
+    aboutQtAction = new QAction(tr("About Qt"));
+    aboutZNavigoAction = new QAction(tr("About zNavigo"));
 
     deleteTabAction->setEnabled(false);
     previousPageAction->setEnabled(false);
     nextPageAction->setEnabled(false);
 
-    addTabAction->setShortcut(QKeySequence(tr("Ctrl+T")));
-    deleteTabAction->setShortcut(QKeySequence(tr("Ctrl+W")));
-    quitAction->setShortcut(QKeySequence(tr("Ctrl+Q")));
-    reloadAction->setShortcut(QKeySequence(tr("Ctrl+R")));
+    addTabAction->setShortcut(QKeySequence(tr("Ctrl+T", "Shortcut for add tab")));
+    deleteTabAction->setShortcut(QKeySequence(tr("Ctrl+W", "Shortcut for delete tab")));
+    quitAction->setShortcut(QKeySequence(tr("Ctrl+Q", "Shortcut for quit")));
+    reloadAction->setShortcut(QKeySequence(tr("Ctrl+R", "Shortcut for reload")));
 
-    fileMenu = menuBar()->addMenu(tr("&Fichier"));
+    fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(addTabAction);
     fileMenu->addAction(deleteTabAction);
     fileMenu->addSeparator();
     fileMenu->addAction(quitAction);
 
-    navigateMenu = menuBar()->addMenu(tr("&Navigation"));
+    navigateMenu = menuBar()->addMenu(tr("&Navigate"));
     navigateMenu->addAction(nextPageAction);
     navigateMenu->addAction(previousPageAction);
     navigateMenu->addAction(reloadAction);
     navigateMenu->addAction(homePageAction);
 
-    historyMenu = menuBar()->addMenu(tr("&Historique"));
+    historyMenu = menuBar()->addMenu(tr("&History"));
 
-    aboutMenu = menuBar()->addMenu(tr("&A propos"));
+    languageMenu = menuBar()->addMenu(tr("&Language"));
+
+    englishAction = new LanguageAction("English", "en");
+    connect(englishAction, SIGNAL(changeLocale(QString)), this, SLOT(changeTranslation(QString)));
+    frenchAction = new LanguageAction("Français", "fr");
+    connect(frenchAction, SIGNAL(changeLocale(QString)), this, SLOT(changeTranslation(QString)));
+    languageMenu->addAction(englishAction);
+    languageMenu->addAction(frenchAction);
+
+    aboutMenu = menuBar()->addMenu(tr("About"));
     aboutMenu->addAction(aboutQtAction);
     aboutMenu->addAction(aboutZNavigoAction);
 
-    navigateToolBar = addToolBar(tr("Navigation"));
+    navigateToolBar = addToolBar(tr("Navigate"));
     navigateToolBar->addAction(previousPageAction);
     navigateToolBar->addAction(nextPageAction);
     navigateToolBar->addAction(reloadAction);
@@ -76,10 +84,9 @@ MainWindow::MainWindow() : QMainWindow()
 
 void MainWindow::addTab()
 {
-    QWebEngineView *page = new QWebEngineView();
-    tabs->addTab(page, tr("Onglet"));
+    WebPage *page = new WebPage();
+    tabs->addTab(page, tr("Tab"));
     tabs->setCurrentIndex(tabs->currentIndex()+1);
-    pages->insert(tabs->currentIndex(), page);
     connect(page, SIGNAL(loadProgress(int)), progress, SLOT(setValue(int)));
     connect(page, SIGNAL(titleChanged(QString)), this, SLOT(changeTitle(QString)));
     connect(page, SIGNAL(urlChanged(QUrl)), this, SLOT(changeUrl(QUrl)));
@@ -94,7 +101,6 @@ void MainWindow::deleteTab()
 {
     if(tabs->count() == 1)
         return;
-    pages->removeOne(getPage());
     tabs->removeTab(tabs->currentIndex());
     if(tabs->count() == 1)
         deleteTabAction->setEnabled(false);
@@ -142,15 +148,13 @@ void MainWindow::load(QUrl url)
 
 void MainWindow::about()
 {
-    QMessageBox::information(this, tr("A propos de zNavigo"), tr("zNavigo est un navigateur web que j'ai cree en tant que TP pour <a href='https://openclassrooms.com'>openclassrooms.com</a>"));
+    QMessageBox::information(this, tr("About zNavigo"), tr("zNavigo is my own web browser, I originally create it for an exercice on <a href='https://openclassrooms.com'>openclassrooms.com</a>"));
 }
 
 void MainWindow::updateUrl(int newIndex)
 {
-    if(pages[0].count()-1 >= newIndex) {
-        updateHistory();
-        changeUrl(getPage()->url());
-    }
+    updateHistory();
+    changeUrl(getPage()->url());
 }
 
 void MainWindow::changeTitle(QString title)
@@ -179,7 +183,7 @@ void MainWindow::changeIcon(QIcon newIcon)
 
 QWebEngineView* MainWindow::getPage()
 {
-    return pages[0][tabs->currentIndex()];
+    return (QWebEngineView*)tabs->currentWidget();
 }
 
 void MainWindow::updateHistory()
@@ -191,4 +195,9 @@ void MainWindow::updateHistory()
         historyMenu->addMenu(menu);
         connect(menu, SIGNAL(urlClicked(QString)), this, SLOT(load(QString)));
     }
+}
+
+void MainWindow::changeTranslation(QString newLocale)
+{
+    emit applyTranslation(newLocale);
 }

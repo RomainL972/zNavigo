@@ -16,8 +16,6 @@ private slots:
     void sendUrlClicked();
 
 private:
-    QString m_title;
-    QString m_url;
     QAction *m_action;
 };
 

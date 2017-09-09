@@ -1,0 +1,33 @@
+#include <QApplication>
+#include <QTranslator>
+#include <QLocale>
+#include <QLibraryInfo>
+#include "mainwindow.h"
+
+int main(int argc, char* argv[])
+{
+    QApplication app(argc, argv);
+
+    QCoreApplication::setOrganizationName("Lebbadi");
+    QCoreApplication::setOrganizationDomain("lebbadi.fr");
+    QCoreApplication::setApplicationName("zNavigo");
+    QSettings settings;
+
+    QString locale = QLocale::system().name().section('_', 0, 0);
+
+    locale = settings.value("locale/preferred", locale).toString();
+
+    settings.setValue("locale/preferred", locale);
+
+    QTranslator translator;
+
+    if(translator.load(QLocale(QLocale::French), "znavigo", "_", ":/translations"))
+        app.installTranslator(&translator);
+    else
+        exit(-1);
+
+    MainWindow window;
+    window.show();
+
+    return app.exec();
+}

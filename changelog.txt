@@ -89,7 +89,7 @@ properties:
 *bug fixes
 +add changeIcon method for changing the tab icon
 
-1.2
+1.2 -  Wed Aug 9 16:27:54 2017
 mainwindow.h:
 *include QtWebEngineWidgets instead of each QWebEngine
 +add history and about
@@ -98,3 +98,6 @@ mainwindow.h:
 +you can click on a url in the history
 +if data in urlLineEdit not url, convert to https://google.com/search?q=$data
 +if it's an url without http://, add it
+
+1.2.1
+*history url are underlined

@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/icones">
+        <file>actu.png</file>
+        <file>go.png</file>
+        <file>home.png</file>
+        <file>prec.png</file>
+        <file>stop.png</file>
+        <file>suiv.png</file>
+        <file>web.png</file>
+    </qresource>
+    <qresource prefix="/translations">
+        <file>znavigo_fr.qm</file>
+        <file>qtbase_fr.qm</file>
+        <file>qt_fr.qm</file>
+    </qresource>
+</RCC>

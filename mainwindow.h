@@ -3,8 +3,9 @@
 #define HOME_URL "http://www.lebbadi.fr"
 
 #include <QtWidgets>
-#include <QtWebEngineWidgets>
 #include "historyitem.h"
+#include "languageaction.h"
+#include "webpage.h"
 
 class MainWindow : public QMainWindow
 {
@@ -13,6 +14,9 @@ public:
     MainWindow();
     QWebEngineView* getPage();
     void updateHistory();
+
+signals:
+    void applyTranslation(QString locale);
 
 public slots:
     void addTab();
@@ -28,9 +32,9 @@ public slots:
     void changeTitle(QString title);
     void changeUrl(QUrl newUrl);
     void changeIcon(QIcon newIcon);
+    void changeTranslation(QString newLocale);
 
 private:
-    QList<QWebEngineView *> *pages;
     QTabWidget *tabs;
     QAction *addTabAction;
     QAction *deleteTabAction;
@@ -41,11 +45,14 @@ private:
     QAction *homePageAction;
     QLineEdit *urlLineEdit;
     QAction *loadUrlAction;
+    LanguageAction *englishAction;
+    LanguageAction *frenchAction;
     QAction *aboutQtAction;
     QAction *aboutZNavigoAction;
     QMenu *fileMenu;
     QMenu *navigateMenu;
     QMenu *historyMenu;
+    QMenu *languageMenu;
     QMenu *aboutMenu;
     QToolBar *navigateToolBar;
     QProgressBar *progress;
